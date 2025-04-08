@@ -1,0 +1,54 @@
+{% extends "discord-getter/base.html.jinja" %}
+
+{% block linkcount %}{{total_links}}{% endblock %}
+
+{% block pagination %}
+<div class="btn-group me-2">
+    <a href="page{{ prev_page }}.html" class="btn btn-outline-primary {{ 'disabled' if prev_page == None else '' }}">Prev</a>
+</div>
+<div class="btn-group">
+    {% for pagenum in range(total_pagenum) %}
+    <a href="{{ 'index' if pagenum == 0 else 'page' ~ (pagenum + 1)|string }}.html" class="btn btn-outline-primary {{ 'disabled' if page_num == pagenum + 1 else '' }}">{{pagenum}}</a>
+    {% endfor %}
+</div>
+<div class="btn-group ms-2">
+    <a href="page{{ next_page }}.html" class="btn btn-outline-primary {{ 'disabled' if next_page == None else '' }}">Next</a>
+</div>
+{% endblock %}
+
+{% block content %}
+{% for col in cards|batch(3) %}
+
+<div class="row mb-4">
+    {% for x in col %}
+
+    <div class="col-md-4">
+        <div class="card my-2" style="width: auto;">
+            {% if x["image"] %}
+                <a href="{{ x['url'] }}" >
+                    <img src="{{ x['image'] }}" class="card-img-top" alt="{{x['title']}}">
+                </a>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title"> {{x["title"]}} </h5>
+                <p class="card-text"> {{x["description"]}} </p>
+                <a href="{{ x['url'] }}" > {{ x['url'] }} </a>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+</div>
+
+{% endfor %}
+{% endblock %}
+
+{% block servers %}
+<select id="switchDropdown" class="form-select" style="width: auto;" onchange="window.location.href=this.value;">
+    {% for server in server_list %}
+        <option value="{{ '/' + server[0] if not server[0].startswith('/') else server[0] }}" {% if server[1] == current_server %}selected{% endif %}>
+            {{ server[1] }}
+        </option>
+    {% endfor %}
+</select>
+{% endblock %}
